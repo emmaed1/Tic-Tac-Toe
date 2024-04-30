@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class Game : MonoBehaviour
 {
     public string gameMode;
-    public GameObject cross, nought;
+    public GameObject cross, nought, bar;
 
     public TextMeshProUGUI Instructions;
 
@@ -19,6 +19,10 @@ public class Game : MonoBehaviour
     public GameObject[] allSpawns = new GameObject[9];
 
     public Seed[] player = new Seed[9];
+
+    //track cells of winning cells
+    Vector2 pos1, pos2; 
+
     private void Awake()
     {
         //get the game mode from the previous screen
@@ -30,7 +34,7 @@ public class Game : MonoBehaviour
 
         Instructions.text = "Turn: Player 1";
 
-        for(int i = 0; i < 9; i++)
+        for (int i = 0; i < 9; i++)
         {
             player[i] = Seed.EMPTY;
         }
@@ -47,6 +51,10 @@ public class Game : MonoBehaviour
             {
                 Turn = Seed.EMPTY;
                 Instructions.text = "Player 1 has won!";
+
+                //winning bar
+                float slope = calculateSlope();
+                Instantiate(bar, calculateCenter(), Quaternion.Euler(0,0,slope));
             }
             else
             {
@@ -63,6 +71,10 @@ public class Game : MonoBehaviour
             {
                 Turn = Seed.EMPTY;
                 Instructions.text = "Player 2 has won!";
+
+                //winning bar
+                float slope = calculateSlope();
+                Instantiate(bar, calculateCenter(), Quaternion.Euler(0, 0, slope));
             }
             else
             {
@@ -101,9 +113,13 @@ public class Game : MonoBehaviour
 
         for (int i = 0; i < 8; i++)
         {
-            if (player[allConditions[i, 0]] == currPlayer & player[allConditions[i,1]] == currPlayer & player[allConditions[i,2]] == currPlayer)
+            if (player[allConditions[i, 0]] == currPlayer & player[allConditions[i, 1]] == currPlayer & player[allConditions[i, 2]] == currPlayer)
             {
                 hasWon = true;
+
+                //winning positions
+                pos1 = allSpawns[allConditions[i, 0]].transform.position;
+                pos2 = allSpawns[allConditions[i, 2]].transform.position;
                 break;
             }
         }
@@ -119,11 +135,40 @@ public class Game : MonoBehaviour
 
         bool isDraw = false;
 
-        if(player1Won == false & player2Won == false & anyEmpty == false)
+        if (player1Won == false & player2Won == false & anyEmpty == false)
         {
             isDraw = true;
         }
         return isDraw;
+    }
+
+    Vector2 calculateCenter()
+    {
+        float x = (int)((pos1.x + pos2.x) / 2);
+        float y = (int)((pos1.y + pos2.y) / 2);
+
+        return new Vector2 (x, y);
+    }
+
+    float calculateSlope()
+    {
+
+        if (pos1.x == pos2.x)
+        {
+            return 0.0f;
+        }
+        else if (pos1.y == pos2.y)
+        {
+            return 90.0f;
+        }
+        else if (pos1.x > 0.0f)
+        {
+            return -45.0f;
+        }
+        else {
+            return 45.0f;
+        }
+        
     }
 }
 

@@ -2119,6 +2119,7 @@ MonoBehaviour:
   nought: {fileID: 9137943182734804091, guid: 8caf9d09fb755a64bb4b59ededbded3c, type: 3}
   bar: {fileID: 5417159105063084294, guid: e0fe163d0030fe24b8983c7991659635, type: 3}
   Instructions: {fileID: 1598155686}
+  player2Name: {fileID: 254418127}
   allSpawns:
   - {fileID: 543382910}
   - {fileID: 911940539}

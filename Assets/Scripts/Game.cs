@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UI;
 
 public class Game : MonoBehaviour
@@ -21,7 +23,9 @@ public class Game : MonoBehaviour
     public Seed[] player = new Seed[9];
 
     //track cells of winning cells
-    Vector2 pos1, pos2; 
+    Vector2 pos1, pos2;
+
+    public GameOver GameOverScreen;
 
     private void Awake()
     {
@@ -30,7 +34,9 @@ public class Game : MonoBehaviour
         gameMode = peristantObj.GetComponent<PersistantObject>().gameMode;
         Destroy(peristantObj);
 
-        if(gameMode == "1 Player")
+        GameManager.Instance.gameMode = gameMode;
+
+        if (gameMode == "1 Player")
         {
             player2Name.text = "AI Player";
         }
@@ -64,6 +70,7 @@ public class Game : MonoBehaviour
                 //winning bar
                 float slope = calculateSlope();
                 Instantiate(bar, calculateCenter(), Quaternion.Euler(0, 0, slope));
+                GameOver();
             }
             else
             {
@@ -84,6 +91,7 @@ public class Game : MonoBehaviour
                 //winning bar
                 float slope = calculateSlope();
                 Instantiate(bar, calculateCenter(), Quaternion.Euler(0, 0, slope));
+                GameOver();
             }
             else
             {
@@ -121,7 +129,8 @@ public class Game : MonoBehaviour
                 Turn = Seed.EMPTY;
 
                 // change the instructions
-                Instructions.text = "Player-2 has won!!!";
+                GameOver();
+                Instructions.text = "Player 2 has won!";
 
                 // Spawn bar
                 float slope = calculateSlope();
@@ -140,6 +149,7 @@ public class Game : MonoBehaviour
         {
             Turn = Seed.EMPTY;
             Instructions.text = "It's a draw!";
+            GameOver();
         }
         Destroy(emptycell);
     }
@@ -286,6 +296,11 @@ public class Game : MonoBehaviour
             }
             return beta;
         }
+    }
+
+    public void GameOver()
+    {
+        GameOverScreen.Setup(Instructions.text);
     }
 }
 
